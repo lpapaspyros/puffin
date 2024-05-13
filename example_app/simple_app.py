@@ -12,7 +12,7 @@ def set_page_config():
 
 def get_icons():
     """Set assistant icon to Snowflake logo."""
-    return {"assistant": "./Snowflake_Logomark_blue.svg", "user": "⛷️"}
+    return {"assistant": "./assets/Snowflake_Logomark_blue.svg", "user": "⛷️"}
 
 
 def sidebar_credentials():
@@ -201,7 +201,7 @@ def generate_arctic_response(options, temperature, top_p):
 def generate_response_if_needed(options, temperature, top_p):
     """Generate a response if the last message is not from the assistant."""
     if st.session_state.messages[-1]["role"] != "assistant":
-        with st.chat_message("assistant", avatar="./Snowflake_Logomark_blue.svg"):
+        with st.chat_message("assistant", avatar="./assets/Snowflake_Logomark_blue.svg"):
             response = generate_arctic_response(options, temperature, top_p)
             full_response = st.write_stream(response)
         message = {"role": "assistant", "content": full_response}

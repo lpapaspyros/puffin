@@ -1,0 +1,2 @@
+from config.page_configuration import page_config
+from config.navbar_configuration import navbar
