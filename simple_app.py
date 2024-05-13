@@ -54,15 +54,18 @@ def retrieve_api_token() -> str:
     return replicate_api
 
 
-def configure_sidebar() -> dict:
+def configure_sidebar(language: str) -> dict:
     """Configure sidebar options for code refactoring.
+
+    Args:
+        language (str): Selected programming language.
 
     Returns:
         dict: A dictionary containing the selected refactor options.
     """
     with st.sidebar:
         st.subheader("Refactor Options")
-        return {
+        options = {
             "optimization": st.selectbox(
                 "Optimize for:", ["Performance", "Readability", "Memory"]
             ),
@@ -82,6 +85,9 @@ def configure_sidebar() -> dict:
             "remove_unused_imports": st.checkbox("Remove unused imports"),
             "generate_docstrings": st.checkbox("Auto-generate docstrings"),
         }
+        if language == "SQL":
+            options["sql_optimization"] = st.checkbox("Optimize SQL queries")
+        return options
 
 
 def initialize_chat() -> None:
@@ -97,15 +103,16 @@ def initialize_chat() -> None:
     )
 
 
-def display_chat_messages(icons: dict) -> None:
+def display_chat_messages(icons: dict, language: str) -> None:
     """Display chat history on the main page.
 
     Args:
         icons (dict): Dictionary of icons for each role.
+        language (str): Selected programming language.
     """
     for message in st.session_state["messages"]:
         with st.chat_message(message["role"], avatar=icons[message["role"]]):
-            st.code(message["content"])
+            st.code(message["content"], language=language)
 
 
 def clear_chat_history() -> None:
@@ -123,7 +130,7 @@ def add_sidebar_clear_button() -> None:
     st.sidebar.button("Clear chat history", on_click=clear_chat_history)
 
 
-@st.cache(show_spinner=False)
+@st.cache_resource(show_spinner=False)
 def get_tokenizer() -> AutoTokenizer:
     """Fetch or initialize the tokenizer.
 
@@ -145,15 +152,18 @@ def count_tokens(prompt: str) -> int:
     return len(get_tokenizer().tokenize(prompt))
 
 
-def get_user_code() -> str:
+def get_user_code(language: str) -> str:
     """Prompt the user to enter code and return it.
+
+    Args:
+        language (str): Selected programming language.
 
     Returns:
         str: User-provided code.
     """
     return st_ace(
-        placeholder="Enter your code here...",
-        language="python",
+        placeholder=f"Enter your {language} code here...",
+        language=language,
         theme="github",
         key="ace_code_input",
         height=300,
@@ -235,10 +245,12 @@ def main() -> None:
     if not api_token:
         return  # Exit if no valid token is provided
 
-    refactor_options = configure_sidebar()
+    language = st.sidebar.selectbox("Select Language", ["python", "sql"])
+
+    refactor_options = configure_sidebar(language)
     initialize_chat()
-    display_chat_messages(icons)
-    user_code = get_user_code()
+    display_chat_messages(icons, language)
+    user_code = get_user_code(language)
     append_user_code(user_code)
     temperature, top_p = refine_model_parameters()
 
@@ -249,7 +261,7 @@ def main() -> None:
                 {"role": "assistant", "content": response}
             )
             with st.chat_message("assistant", avatar=icons["assistant"]):
-                st.code(response)
+                st.code(response, language=language)
 
     if st.button("Generate"):
         st.session_state["generate"] = True
