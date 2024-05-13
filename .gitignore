@@ -1,3 +1,4 @@
 .venv
-.streamlit/secrets.toml
-streamlit_env_for_hackathon
+.streamlit
+venv
+*__pycache__*
