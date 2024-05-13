@@ -1,0 +1,45 @@
+{
+    "optimize_for": [
+        "Performance", 
+        "Memory", 
+        "Readability", 
+        "Maintainnability"
+    ],
+    "programming_languages": [
+        "Python",
+        "SQL",
+        "Java",
+        "JavaScript",
+        "C#",
+        "C",
+        "C++",
+        "PHP",
+        "TypeScript",
+        "Ruby",
+        "Swift",
+        "Go",
+        "Kotlin",
+        "R",
+        "Scala",
+        "Perl",
+        "Lua",
+        "Rust",
+        "Dart",
+        "Objective-C",
+        "VBA"
+    ],
+    "sql_variants": [
+        "MySQL",
+        "PostgreSQL",
+        "Microsoft SQL Server",
+        "SQLite",
+        "Oracle SQL"
+    ],
+    "docstring_formats": [
+        "reStructuredText",
+        "NumPy/SciPy",
+        "Google",
+        "Epytext",
+        "Markdown"
+    ]
+}
