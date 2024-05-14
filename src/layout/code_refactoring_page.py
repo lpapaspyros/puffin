@@ -11,7 +11,7 @@ def code_refactoring(refactor_options):
     refactor_button = st.button("Refactor Code")
 
     if refactor_button:
-        refactor_code(user_code_input, refactor_options["refactor_options"])
+        refactor_code(user_code_input, refactor_options)
 
 
 def get_user_provided_code(language_input):
@@ -35,7 +35,7 @@ def refactor_code(user_code_input, refactor_options):
         temperature = refactor_options["model_parameters"]["temperature"], 
         top_p = refactor_options["model_parameters"]["temperature"]
         )
-    prompt = generate_prompt(user_code_input, refactor_options)
+    prompt = generate_prompt(user_code_input, refactor_options["refactor_options"])
     
     st.write_stream(arctic_ops.invoke_snowflake_arctic(prompt))
 
