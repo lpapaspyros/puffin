@@ -87,7 +87,10 @@ def get_refactor_options():
         refactor_options["remove_unused_imports"] = generate_toggle(
             label="Remove unused imports", default=True
         )
-
+        refactor_options["comment_verbosity"] = generate_dropdown(
+            label="Comment Verbosity",
+            options=refactor_menu_options["comment_verbosity"],
+        )
         return refactor_options
 
 

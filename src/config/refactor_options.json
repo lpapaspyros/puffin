@@ -36,9 +36,9 @@
         "Oracle SQL"
     ],
     "docstring_formats": [
+        "Google",
         "reStructuredText",
         "NumPy/SciPy",
-        "Google",
         "Epytext",
         "Markdown"
     ],
@@ -51,6 +51,7 @@
         "PEP 3107 - Function Annotations"
     ],
     "comment_verbosity": [
+        "No comments",
         "Minimal",
         "Moderate",
         "Verbose"
