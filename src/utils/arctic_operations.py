@@ -45,7 +45,7 @@ class ArcticOps:
             "snowflake/snowflake-arctic-instruct",
             input={
                 "prompt": prompt,
-                "prompt_template": r"{prompt}",
+                #"prompt_template": r"{prompt}",
                 "temperature": self.temperature,
                 "top_p": self.top_p,
             },

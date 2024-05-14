@@ -20,6 +20,6 @@ def get_page_contents(page, options):
     if page == "Home":
         homepage()
     elif page == "Code Refactoring":
-        code_refactoring()
+        code_refactoring(options)
     elif page == "CSV File Data Analysis":
         data_analysis()
