@@ -51,9 +51,9 @@
         "PEP 3107 - Function Annotations"
     ],
     "comment_verbosity": [
-        "No comments",
         "Minimal",
         "Moderate",
-        "Verbose"
+        "Verbose",
+        "No comments"
     ]
 }
