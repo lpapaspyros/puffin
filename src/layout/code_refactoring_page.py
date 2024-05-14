@@ -44,13 +44,14 @@ def generate_prompt(user_code_input, refactor_options):
 
     prompt = f"""
     The following {refactor_options["programming_language"]}  code is provided:
+    ```
     {user_code_input}
-     
+    ```
     The code should be refactored and optimized based on the following criteria:\n
     """
-
-    if len(refactor_options["optimize_for"] > 0):
+    if len(refactor_options["optimize_for"]) > 0:
         optimize_for_string = ", ".join(refactor_options["optimize_for"])
         prompt += f"- Optimize code for {optimize_for_string}"
     
-    #if refactor_options["optimize_for"]
+    prompt += "\nProvide the new refactored code and a step by step guide on the changes made."
+    return(prompt)
