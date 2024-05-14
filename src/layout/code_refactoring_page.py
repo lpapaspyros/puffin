@@ -3,6 +3,7 @@ from streamlit_ace import st_ace
 from utils import ArcticOps
 
 
+
 def code_refactoring(refactor_options):
     st.subheader("Select Functionality")
     selected_functionality = st.radio(
@@ -123,5 +124,4 @@ def generate_prompt(user_code_input, refactor_options):
         "\nProvide the new refactored code and a step-by-step guide on the changes"
         " made."
     )
-    st.write(prompt)
     return prompt
