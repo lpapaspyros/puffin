@@ -5,7 +5,15 @@ import streamlit_antd_components as sac
 
 def sidebar(page):
     with st.sidebar:
-        st.title("Integrated Code Editor and CSV Analysis Platform")
+        st.markdown(
+            "<h1 style='text-align: center; color: black;'>CodeGenie</h1>",
+            unsafe_allow_html=True,
+        )
+        st.markdown(
+            "<h3 style='text-align: center; color: grey;'>AI-Powered Code"
+            " Refactoring & Data Insights</h3>",
+            unsafe_allow_html=True,
+        )
         sac.divider(color="black", key="title")
 
         if page == "Code Refactoring":
@@ -67,11 +75,11 @@ def get_refactor_options():
             label="Generate type annotations", default=True
         )
 
-        refactor_options["identify_code_anomalies"] = generate_toggle(
-            label="Identify code anomalies", default=True
+        refactor_options["identify_code_smells"] = generate_toggle(
+            label="Identify code smells", default=True
         )
 
-        if refactor_options["identify_code_anomalies"]:
+        if refactor_options["identify_code_smells"]:
             refactor_options["suggest_fixes"] = generate_toggle(
                 label="Suggest remediations for code anomalies", default=True
             )

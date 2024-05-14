@@ -63,10 +63,13 @@ def generate_prompt(user_code_input, refactor_options):
         prompt += "- Autogenerate docstrings\n"
     if refactor_options.get("include_type_annotations"):
         prompt += "- Include type annotations\n"
-    if refactor_options.get("identify_code_anomalies"):
-        prompt += "- Identify code anomalies\n"
+    if refactor_options.get("identify_code_smells"):
+        prompt += "- Identify code smells and fix them\n"
         if refactor_options.get("suggest_fixes"):
-            prompt += "  - Suggest remediations for code anomalies\n"
+            prompt += (
+                "  - Suggest remediations for code smells and explain why and what"
+                " should change\n"
+            )
     if refactor_options.get("enable_variable_renaming"):
         prompt += "- Optimize variable names\n"
     if refactor_options.get("suggest_code_organization"):
@@ -82,4 +85,5 @@ def generate_prompt(user_code_input, refactor_options):
         "\nProvide the new refactored code and a step-by-step guide on the changes"
         " made."
     )
+    st.write(prompt)
     return prompt
