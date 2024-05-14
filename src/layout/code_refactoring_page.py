@@ -65,16 +65,25 @@ def refactor_code(user_code_input, refactor_options):
 
 
 def generate_prompt(user_code_input, refactor_options):
-    prompt = f"""
-    The following {refactor_options["programming_language"]} code is provided:
-    ```
-    {user_code_input}
-    ```
-    The code should be refactored and optimized based on the following criteria:\n
-    """
     refactor = (
         True if st.session_state["selected_functionality"] == "Refactor" else False
     )
+    if refactor:
+        prompt = f"""
+        The following {refactor_options["programming_language"]} code is provided:
+        ```
+        {user_code_input}
+        ```
+        The code should be refactored and optimized based on the following criteria:\n
+        """
+    else:
+        prompt = f"""
+        The following requirements are provided:
+        ```
+        {user_code_input}
+        ```
+        Based on the requirements, the code should be generated and optimized based on the following criteria:\n
+        """
 
     if len(refactor_options["optimize_for"]) > 0:
         optimize_for_string = ", ".join(refactor_options["optimize_for"])
