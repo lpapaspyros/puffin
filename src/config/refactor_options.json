@@ -1,8 +1,8 @@
 {
     "optimize_for": [
-        "Performance", 
-        "Memory", 
-        "Readability", 
+        "Performance",
+        "Memory",
+        "Readability",
         "Maintainnability"
     ],
     "programming_languages": [
@@ -41,5 +41,18 @@
         "Google",
         "Epytext",
         "Markdown"
+    ],
+    "pep_list": [
+        "PEP 8 - Style Guide for Python Code",
+        "PEP 20 - The Zen of Python",
+        "PEP 257 - Docstring Conventions",
+        "PEP 484 - Type Hints",
+        "PEP 526 - Syntax for Variable Annotations",
+        "PEP 3107 - Function Annotations"
+    ],
+    "comment_verbosity": [
+        "Minimal",
+        "Moderate",
+        "Verbose"
     ]
 }
