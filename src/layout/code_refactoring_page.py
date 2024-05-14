@@ -7,7 +7,7 @@ from utils import ArcticOps
 def code_refactoring(refactor_options):
 
     st.subheader("Enter your code here")
-    user_code_input = get_user_provided_code(refactor_options["programming_language"].lower())
+    user_code_input = get_user_provided_code(refactor_options["refactor_options"]["programming_language"].lower())
     refactor_button = st.button("Refactor Code")
 
     if refactor_button:
@@ -43,8 +43,8 @@ def refactor_code(user_code_input, refactor_options):
 def generate_prompt(user_code_input, refactor_options):
 
     prompt = f"""
-    The following code is provided:
-    {refactor_options["programming_language"]} 
+    The following {refactor_options["refactor_options"]["programming_language"]}  code is provided:
+    {user_code_input}
      
     The code should be refactored and optimized based on the following criteria:\n
     """
