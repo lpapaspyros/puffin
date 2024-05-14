@@ -4,14 +4,40 @@ from utils import ArcticOps
 
 
 def code_refactoring(refactor_options):
-    st.subheader("Enter your code here")
-    user_code_input = get_user_provided_code(
-        refactor_options["refactor_options"]["programming_language"].lower()
+    st.subheader("Select Functionality")
+    selected_functionality = st.radio(
+        "Refactor or Write New Code",
+        ["Refactor", "Write New Code"],
+        horizontal=True,
+        label_visibility="collapsed",
     )
-    refactor_button = st.button("Refactor Code")
 
-    if refactor_button:
-        refactor_code(user_code_input, refactor_options)
+    update_selected_functionality(selected_functionality)
+
+    if selected_functionality == "Refactor":
+        st.subheader("Enter your code here")
+        user_input = get_user_provided_code(
+            refactor_options["refactor_options"]["programming_language"].lower()
+        )
+        refactor_button = st.button("Refactor Code")
+
+        if refactor_button:
+            refactor_code(user_input, refactor_options)
+    else:
+        st.subheader("Please provide your requirements")
+        user_input = st.text_area("Enter your requirements here", height=200)
+        refactor_button = st.button("Generate Code")
+
+        if refactor_button:
+            refactor_code(user_input, refactor_options)
+
+
+def update_selected_functionality(selected_functionality):
+    if "selected_functionality" not in st.session_state:
+        st.session_state["selected_functionality"] = selected_functionality
+    elif st.session_state["selected_functionality"] != selected_functionality:
+        st.session_state["selected_functionality"] = selected_functionality
+        st.rerun()
 
 
 def get_user_provided_code(language_input):
@@ -46,6 +72,10 @@ def generate_prompt(user_code_input, refactor_options):
     ```
     The code should be refactored and optimized based on the following criteria:\n
     """
+    refactor = (
+        True if st.session_state["selected_functionality"] == "Refactor" else False
+    )
+
     if len(refactor_options["optimize_for"]) > 0:
         optimize_for_string = ", ".join(refactor_options["optimize_for"])
         prompt += f"- Optimize code for {optimize_for_string}\n"
@@ -63,18 +93,17 @@ def generate_prompt(user_code_input, refactor_options):
         prompt += "- Autogenerate docstrings\n"
     if refactor_options.get("include_type_annotations"):
         prompt += "- Include type annotations\n"
-    if refactor_options.get("identify_code_smells"):
-        prompt += "- Identify code smells and fix them\n"
-        if refactor_options.get("suggest_fixes"):
-            prompt += (
-                "  - Suggest remediations for code smells and explain why and what"
-                " should change\n"
-            )
-    if refactor_options.get("enable_variable_renaming"):
+    if refactor and refactor_options.get("identify_code_smells"):
+        prompt += (
+            "- Identify code smells and fix them\n"
+            "- Suggest remediations for code smells and explain why and what"
+            " should change in detail\n"
+        )
+    if refactor and refactor_options.get("enable_variable_renaming"):
         prompt += "- Optimize variable names\n"
-    if refactor_options.get("suggest_code_organization"):
+    if refactor and refactor_options.get("suggest_code_organization"):
         prompt += "- Suggest class and module structure\n"
-    if refactor_options.get("remove_unused_imports"):
+    if refactor and refactor_options.get("remove_unused_imports"):
         prompt += "- Remove unused imports\n"
     if refactor_options.get("comment_verbosity"):
         prompt += (

@@ -37,7 +37,9 @@ def get_code_refactoring_options():
 def get_refactor_options():
     refactor_menu_options = load_refactor_menu_options()
     refactor_options = {}
-
+    refactor = (
+        True if st.session_state["selected_functionality"] == "Refactor" else False
+    )
     with st.expander(
         ":twisted_rightwards_arrows: **Refactor Options**", expanded=True
     ):
@@ -74,27 +76,22 @@ def get_refactor_options():
         refactor_options["include_type_annotations"] = generate_toggle(
             label="Generate type annotations", default=True
         )
-
-        refactor_options["identify_code_smells"] = generate_toggle(
-            label="Identify code smells", default=True
-        )
-
-        if refactor_options["identify_code_smells"]:
-            refactor_options["suggest_fixes"] = generate_toggle(
-                label="Suggest remediations for code anomalies", default=True
+        if refactor:
+            refactor_options["identify_code_smells"] = generate_toggle(
+                label="Identify code smells", default=True
             )
 
-        refactor_options["enable_variable_renaming"] = generate_toggle(
-            label="Optimize variable names", default=True
-        )
+            refactor_options["enable_variable_renaming"] = generate_toggle(
+                label="Optimize variable names", default=True
+            )
 
+            refactor_options["remove_unused_imports"] = generate_toggle(
+                label="Remove unused imports", default=True
+            )
         refactor_options["suggest_code_organization"] = generate_toggle(
             label="Suggest class and module structure", default=True
         )
 
-        refactor_options["remove_unused_imports"] = generate_toggle(
-            label="Remove unused imports", default=True
-        )
         refactor_options["comment_verbosity"] = generate_dropdown(
             label="Comment Verbosity",
             options=refactor_menu_options["comment_verbosity"],
