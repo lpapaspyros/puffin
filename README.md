@@ -1,14 +1,16 @@
 
+
 [![Release Badge](https://gitlab.com/pngts93/arctic-streamlit-hackathon/-/badges/release.svg?order_by=release_at)](https://gitlab.com/pngts93/arctic-streamlit-hackathon/-/releases)
 [![pipeline status](https://gitlab.com/pngts93/arctic-streamlit-hackathon/badges/main/pipeline.svg)](https://gitlab.com/pngts93/arctic-streamlit-hackathon/-/commits/main)
 [![Python Version](https://img.shields.io/badge/python-3.10-blue)](https://www.python.org/downloads/release/python-3916/)
 
+# Table of Content
 <!-- vscode-markdown-toc -->
-	* 1. [Categories and Scoring Guidelines](#CategoriesandScoringGuidelines)
-	* 2. [Applying Scores](#ApplyingScores)
-	* 3. [Example Evaluation](#ExampleEvaluation)
-		* 3.1. [Initial Code](#InitialCode)
-		* 3.2. [Refactored Code](#RefactoredCode)
+  1. [Categories and Scoring Guidelines](#CategoriesandScoringGuidelines)
+    1.1. [Applying Scores](#ApplyingScores)
+	1.2. [Example Evaluation](#ExampleEvaluation)
+		 1.2.1. [Initial Code](#InitialCode)
+		 1.2.2. [Refactored Code](#RefactoredCode)
 
 <!-- vscode-markdown-toc-config
 	numbering=true
@@ -17,8 +19,7 @@
 <!-- /vscode-markdown-toc -->
 
 
-
-###  1. <a name='CategoriesandScoringGuidelines'></a>Categories and Scoring Guidelines
+##  1. <a name='CategoriesandScoringGuidelines'></a>Categories and Scoring Guidelines
 
 1. **Technical Debt**
    - **Explanation**: Technical debt refers to the implied cost of additional rework caused by choosing an easy solution now instead of using a better approach that would take longer. It accumulates when code is written quickly without consideration for future maintenance.
@@ -56,7 +57,7 @@
      - **4-5**: Low security; the code lacks adequate security measures and is vulnerable to some issues.
      - **1-3**: Very low security; the code is highly vulnerable and lacks basic security measures.
 
-###  2. <a name='ApplyingScores'></a>Applying Scores
+###  1.1. <a name='ApplyingScores'></a>Applying Scores
 
 When evaluating code, consider the following steps:
 
@@ -65,11 +66,11 @@ When evaluating code, consider the following steps:
 3. **Readability**: Evaluate the clarity of the code. Look for meaningful naming conventions, use of comments, and overall structure.
 4. **Security Index**: Check for proper input validation, error handling, and protection against common vulnerabilities.
 
-###  3. <a name='ExampleEvaluation'></a>Example Evaluation
+###  1.2. <a name='ExampleEvaluation'></a>Example Evaluation
 
 Let's take the initial and refactored `temp_converter` code as an example:
 
-####  3.1. <a name='InitialCode'></a>Initial Code
+####  1.2.1. <a name='InitialCode'></a>Initial Code
 ```python
 def temp_converter(temp, unit):
     if unit.upper() == 'C':
@@ -85,7 +86,7 @@ def temp_converter(temp, unit):
 - **Readability**: 8 (Clear but lacks detailed comments)
 - **Security Index**: 6 (Assumes valid input without validation)
 
-####  3.2. <a name='RefactoredCode'></a>Refactored Code
+####  1.2.2. <a name='RefactoredCode'></a>Refactored Code
 ```python
 def temp_converter(temp, unit):
     """
