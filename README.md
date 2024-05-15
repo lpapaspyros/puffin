@@ -1,7 +1,7 @@
+
 [![Release Badge](https://gitlab.com/pngts93/arctic-streamlit-hackathon/-/badges/release.svg?order_by=release_at)](https://gitlab.com/pngts93/arctic-streamlit-hackathon/-/releases)
 [![pipeline status](https://gitlab.com/pngts93/arctic-streamlit-hackathon/badges/main/pipeline.svg)](https://gitlab.com/pngts93/arctic-streamlit-hackathon/-/commits/main)
 [![Python Version](https://img.shields.io/badge/python-3.10-blue)](https://www.python.org/downloads/release/python-3916/)
-
 
 <!-- vscode-markdown-toc -->
 	* 1. [Categories and Scoring Guidelines](#CategoriesandScoringGuidelines)
@@ -15,6 +15,7 @@
 	autoSave=true
 	/vscode-markdown-toc-config -->
 <!-- /vscode-markdown-toc -->
+
 
 
 ###  1. <a name='CategoriesandScoringGuidelines'></a>Categories and Scoring Guidelines
