@@ -1,15 +1,24 @@
 import json
 import streamlit as st
 import streamlit_antd_components as sac
+from typing import Any, Dict, Tuple
 
 
-def sidebar(page):
+def sidebar(page: str) -> Dict[str, Any]:
+    """Generate a sidebar for different pages with specific options.
+
+    Args:
+        page: The name of the current page.
+
+    Returns:
+        A dictionary containing options based on the provided page.
+    """
     with st.sidebar:
-        col = st.columns(2)
-        col[0].image("assets/puffin.png", width=200)
-        col[1].markdown("# ")
-        col[1].markdown("# ")
-        col[1].title("Puffin")
+        col1, col2 = st.columns(2)
+        col1.image("assets/puffin.png", width=200)
+        col2.markdown("# ")
+        col2.markdown("# ")
+        col2.title("Puffin")
 
         st.markdown(
             "<h3 style='text-align: center; color: grey;'>AI-Powered Code"
@@ -18,15 +27,21 @@ def sidebar(page):
         )
         sac.divider(color="black", key="title")
 
+        options = {}
         if page == "CodeLab":
             options = get_code_refactoring_options()
-        if page == "Analytics Engine":
+        elif page == "Analytics Engine":
             options = get_csv_data_analysis_options()
 
         return options
 
 
-def get_code_refactoring_options():
+def get_code_refactoring_options() -> Dict[str, Any]:
+    """Get options for code refactoring.
+
+    Returns:
+        A dictionary containing model parameters and refactor options.
+    """
     refactor_options = get_refactor_options()
     temperature, top_p = get_model_parameters()
     sidebar_options = {
@@ -36,12 +51,15 @@ def get_code_refactoring_options():
     return sidebar_options
 
 
-def get_refactor_options():
+def get_refactor_options() -> Dict[str, Any]:
+    """Retrieve and arrange refactoring options based on user selection.
+
+    Returns:
+        A dictionary containing refactoring options for the selected language.
+    """
     refactor_menu_options = load_refactor_menu_options()
     refactor_options = {}
-    refactor = (
-        True if st.session_state["selected_functionality"] == "Refactor" else False
-    )
+    refactor = st.session_state["selected_functionality"] == "Refactor"
     expander_title = (
         ":twisted_rightwards_arrows: **Refactor Options**"
         if refactor
@@ -49,111 +67,157 @@ def get_refactor_options():
     )
 
     with st.expander(expander_title, expanded=True):
-        refactor_options["programming_language"] = generate_dropdown(
-            label="Programming Language",
-            options=refactor_menu_options["programming_languages"],
+        programming_language = generate_dropdown(
+            "Programming Language",
+            refactor_menu_options["programming_languages"],
         )
 
-        refactor_options["optimize_for"] = generate_multiselect(
-            label="Optimize for", options=refactor_menu_options["optimize_for"]
+        optimize_for = generate_multiselect(
+            "Optimize for", refactor_menu_options["optimize_for"]
         )
-        # OPTION FOR SQL
-        if refactor_options["programming_language"] == "SQL":
-            refactor_options["sql_variant"] = generate_dropdown(
-                label="SQL Variant", options=refactor_menu_options["sql_variants"]
+
+        refactor_options.update(
+            {
+                "programming_language": programming_language,
+                "optimize_for": optimize_for,
+            }
+        )
+
+        # Additional options for SQL and Python.
+        if programming_language == "SQL":
+            refactor_options.update(
+                {
+                    "sql_variant": generate_dropdown(
+                        "SQL Variant", refactor_menu_options["sql_variants"]
+                    ),
+                    "sql_formatting": generate_toggle(
+                        "Enforce SQL Formatting", True
+                    ),
+                }
             )
-            refactor_options["sql_formatting"] = generate_toggle(
-                label="Enforce SQL Formatting", default=True
-            )
-        # OPTION FOR PYTHON
-        if refactor_options["programming_language"] == "Python":
+        elif programming_language == "Python":
             refactor_options["select_pep_compliance"] = generate_multiselect(
-                label="Select PEP8 Compliance",
-                options=refactor_menu_options["pep_list"],
+                "Select PEP8 Compliance", refactor_menu_options["pep_list"]
             )
-        # OPTION FOR OTHER LANGUAGES
-        if refactor_options["programming_language"] != "SQL":
+
+        # Docstring and type annotation options for non-SQL languages.
+        if programming_language != "SQL":
             docstring_format = st.empty()
 
-            refactor_options["autogenerate_docstring"] = generate_toggle(
-                label="Generate docstrings", default=True
-            )
+            autogenerate_docstring = generate_toggle("Generate docstrings", True)
 
-            if refactor_options["autogenerate_docstring"]:
+            if autogenerate_docstring:
                 docstring_format = docstring_format.selectbox(
-                    label="Docstring Format",
-                    options=refactor_menu_options["docstring_formats"],
+                    "Docstring Format", refactor_menu_options["docstring_formats"]
                 )
 
-            refactor_options["include_type_annotations"] = generate_toggle(
-                label="Generate type annotations", default=True
+            refactor_options.update(
+                {
+                    "autogenerate_docstring": autogenerate_docstring,
+                    "include_type_annotations": generate_toggle(
+                        "Generate type annotations", True
+                    ),
+                    "suggest_code_organization": generate_toggle(
+                        "Suggest class and module structure", True
+                    ),
+                }
             )
 
-            refactor_options["suggest_code_organization"] = generate_toggle(
-                label="Suggest class and module structure", default=True
-            )
-        # COMMON OPTIONS FOR ALL LANGUAGES
+        # Common options regardless of programming language.
         if refactor:
-            refactor_options["security_check"] = generate_toggle(
-                label="Perform security checks", default=True
+            refactor_options.update(
+                {
+                    "security_check": generate_toggle(
+                        "Perform security checks", True
+                    ),
+                    "identify_code_smells": generate_toggle(
+                        "Identify code issues", True
+                    ),
+                    "enable_variable_renaming": generate_toggle(
+                        "Optimize variable names", True
+                    ),
+                }
             )
-            refactor_options["identify_code_smells"] = generate_toggle(
-                label="Identify code issues", default=True
-            )
-
-            refactor_options["enable_variable_renaming"] = generate_toggle(
-                label="Optimize variable names", default=True
-            )
-            if refactor_options["programming_language"] != "SQL":
+            if programming_language != "SQL":
                 refactor_options["remove_unused_imports"] = generate_toggle(
-                    label="Remove unused imports", default=True
+                    "Remove unused imports", True
                 )
 
         refactor_options["comment_verbosity"] = generate_dropdown(
-            label="Comment Verbosity",
-            options=refactor_menu_options["comment_verbosity"],
+            "Comment Verbosity", refactor_menu_options["comment_verbosity"]
         )
+
         return refactor_options
 
 
-def generate_toggle(label, default):
-    selection = st.toggle(label=label, value=default)
-    return selection
+def generate_toggle(label: str, default: bool) -> bool:
+    """Create a toggle switch in the UI.
+
+    Args:
+        label: The label for the toggle switch.
+        default: The default value for the toggle switch.
+
+    Returns:
+        The current state of the toggle switch.
+    """
+    return st.checkbox(label, default)
 
 
-def generate_dropdown(label, options):
-    selection = st.selectbox(label=label, options=options)
-    return selection
+def generate_dropdown(label: str, options: list) -> Any:
+    """Create a dropdown selector in the UI.
+
+    Args:
+        label: The label for the dropdown.
+        options: The list of options to choose from.
+
+    Returns:
+        The currently selected option.
+    """
+    return st.selectbox(label, options)
 
 
-def generate_multiselect(label, options):
-    selections = st.multiselect(label=label, options=options)
-    return selections
+def generate_multiselect(label: str, options: list) -> list:
+    """Create a multiselect box in the UI.
+
+    Args:
+        label: The label for the multiselect box.
+        options: The list of options to choose from.
+
+    Returns:
+        The list of selected options.
+    """
+    return st.multiselect(label, options)
 
 
-def get_model_parameters():
+def get_model_parameters() -> Tuple[float, float]:
+    """Get the model parameters from the user input.
+
+    Returns:
+        A tuple containing the temperature and top_p values.
+    """
     with st.expander(":hammer_and_wrench: **Model Parameters**", expanded=False):
         temperature = st.slider(
-            label="Temperature",
-            min_value=0.01,
-            max_value=5.0,
-            value=0.3,
-            step=0.01,
+            "Temperature", min_value=0.01, max_value=5.0, value=0.3, step=0.01
         )
 
         top_p = st.slider(
-            label="Top P", min_value=0.01, max_value=1.0, value=0.9, step=0.01
+            "Top P", min_value=0.01, max_value=1.0, value=0.9, step=0.01
         )
 
-    return (temperature, top_p)
+    return temperature, top_p
 
 
-def get_csv_data_analysis_options():
+def get_csv_data_analysis_options() -> None:
+    """Placeholder function for CSV data analysis options."""
     pass
 
 
-def load_refactor_menu_options():
+def load_refactor_menu_options() -> Dict[str, Any]:
+    """Load refactoring menu options from a JSON file.
+
+    Returns:
+        A dictionary of options loaded from the JSON configuration file.
+    """
     file_path = "./src/config/refactor_options.json"
     with open(file_path, "r") as refactor_menu_options_json:
-        refactor_menu_options = json.load(refactor_menu_options_json)
-    return refactor_menu_options
+        return json.load(refactor_menu_options_json)
