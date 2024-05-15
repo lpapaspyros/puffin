@@ -5,10 +5,12 @@ import streamlit_antd_components as sac
 
 def sidebar(page):
     with st.sidebar:
-        st.markdown(
-            "<h1 style='text-align: center; color: black;'>CodeGenie</h1>",
-            unsafe_allow_html=True,
-        )
+        col = st.columns(2)
+        col[0].image("assets/puffin.png", width=200)
+        col[1].markdown("# ")
+        col[1].markdown("# ")
+        col[1].title("Puffin")
+
         st.markdown(
             "<h3 style='text-align: center; color: grey;'>AI-Powered Code"
             " Refactoring & Data Insights</h3>",
