@@ -1,9 +1,11 @@
 from streamlit_navigation_bar import st_navbar
 
-def navbar():
 
-    pages = ["Code Refactoring", "CSV File Data Analysis", "GitLab"]
-    urls = {"GitLab": "https://gitlab.com/pngts93/arctic-streamlit-hackathon/-/tree/master?ref_type=heads"}
+def navbar():
+    pages = ["CodeLab", "Analytics Engine", "GitLab"]
+    urls = {
+        "GitLab": "https://gitlab.com/pngts93/arctic-streamlit-hackathon/-/tree/master?ref_type=heads"
+    }
 
     logo_path = "./assets/Snowflake_Logomark_blue.svg"
 
@@ -24,7 +26,7 @@ def navbar():
             "color": "var(--text-color)",
             "font-weight": "normal",
             "padding": "14px",
-        }
+        },
     }
     options = {
         "show_menu": True,
@@ -39,4 +41,4 @@ def navbar():
         options=options,
     )
 
-    return(page)
+    return page

@@ -29,11 +29,16 @@
         "VBA"
     ],
     "sql_variants": [
+        "Snowflake",
         "MySQL",
         "PostgreSQL",
         "Microsoft SQL Server",
         "SQLite",
-        "Oracle SQL"
+        "Oracle SQL",
+        "MariaDB",
+        "IBM Db2",
+        "Amazon Redshift",
+        "Google BigQuery"
     ],
     "docstring_formats": [
         "Google",

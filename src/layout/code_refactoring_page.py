@@ -3,12 +3,11 @@ from streamlit_ace import st_ace
 from utils import ArcticOps
 
 
-
 def code_refactoring(refactor_options):
     st.subheader("Select Functionality")
     selected_functionality = st.radio(
         "Refactor or Write New Code",
-        ["Refactor", "Write New Code"],
+        ["Refactor", "Write New Code", " Review Code"],
         horizontal=True,
         label_visibility="collapsed",
     )
@@ -24,13 +23,16 @@ def code_refactoring(refactor_options):
 
         if refactor_button:
             refactor_code(user_input, refactor_options)
-    else:
+    elif selected_functionality == "Write New Code":
         st.subheader("Please provide your requirements")
         user_input = st.text_area("Enter your requirements here", height=200)
         refactor_button = st.button("Generate Code")
 
         if refactor_button:
             refactor_code(user_input, refactor_options)
+    elif selected_functionality == " Review Code":
+        st.subheader("Review Code")
+        st.write("Code review functionality is not yet implemented.")
 
 
 def update_selected_functionality(selected_functionality):
@@ -77,7 +79,7 @@ def generate_prompt(user_code_input, refactor_options):
         ```
         The code should be refactored and optimized based on the following criteria:\n
         """
-    else:
+    elif st.session_state["selected_functionality"] == "Write New Code":
         prompt = f"""
         The following requirements are provided:
         ```
@@ -98,9 +100,17 @@ def generate_prompt(user_code_input, refactor_options):
             refactor_options["select_pep_compliance"]
         )
         prompt += f"- Ensure PEP compliance for: {pep_compliance_string}\n"
+    if refactor_options.get("sql_variant"):
+        prompt += f"- SQL Variant: {refactor_options['sql_variant']}\n"
+    if refactor_options.get("sql_formatting"):
+        prompt += "- Enforce SQL Formatting\n"
 
     if refactor_options.get("autogenerate_docstring"):
         prompt += "- Autogenerate docstrings\n"
+        if refactor_options.get("docstring_format"):
+            prompt += (
+                f"- Docstring format: {refactor_options['docstring_format']}\n"
+            )
     if refactor_options.get("include_type_annotations"):
         prompt += "- Include type annotations\n"
     if refactor and refactor_options.get("identify_code_smells"):
@@ -115,10 +125,16 @@ def generate_prompt(user_code_input, refactor_options):
         prompt += "- Suggest class and module structure\n"
     if refactor and refactor_options.get("remove_unused_imports"):
         prompt += "- Remove unused imports\n"
+    if refactor and refactor_options.get("security_check"):
+        prompt += "- Perform security checks\n"
     if refactor_options.get("comment_verbosity"):
         prompt += (
             f"- Set comment verbosity to {refactor_options['comment_verbosity']}\n"
         )
+    if refactor_options.get("programming_language") == "Python":
+        prompt += "- Ensure the code is Pythonic\n"
+    if refactor_options.get("programming_language") == "SQL":
+        prompt += "- Ensure the code is SQL-compliant\n"
 
     prompt += (
         "\nProvide the new refactored code and a step-by-step guide on the changes"

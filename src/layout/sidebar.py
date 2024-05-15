@@ -18,17 +18,17 @@ def sidebar(page):
         )
         sac.divider(color="black", key="title")
 
-        if page == "Code Refactoring":
+        if page == "CodeLab":
             options = get_code_refactoring_options()
-        elif page == "CSV File Data Analysis":
+        if page == "Analytics Engine":
             options = get_csv_data_analysis_options()
 
         return options
 
 
 def get_code_refactoring_options():
-    temperature, top_p = get_model_parameters()
     refactor_options = get_refactor_options()
+    temperature, top_p = get_model_parameters()
     sidebar_options = {
         "model_parameters": {"temperature": temperature, "top_p": top_p},
         "refactor_options": refactor_options,
@@ -42,57 +42,72 @@ def get_refactor_options():
     refactor = (
         True if st.session_state["selected_functionality"] == "Refactor" else False
     )
-    with st.expander(
-        ":twisted_rightwards_arrows: **Refactor Options**", expanded=True
-    ):
+    expander_title = (
+        ":twisted_rightwards_arrows: **Refactor Options**"
+        if refactor
+        else ":twisted_rightwards_arrows: **Code Generation Options**"
+    )
+
+    with st.expander(expander_title, expanded=True):
         refactor_options["programming_language"] = generate_dropdown(
             label="Programming Language",
             options=refactor_menu_options["programming_languages"],
         )
 
+        refactor_options["optimize_for"] = generate_multiselect(
+            label="Optimize for", options=refactor_menu_options["optimize_for"]
+        )
+        # OPTION FOR SQL
         if refactor_options["programming_language"] == "SQL":
             refactor_options["sql_variant"] = generate_dropdown(
                 label="SQL Variant", options=refactor_menu_options["sql_variants"]
             )
+            refactor_options["sql_formatting"] = generate_toggle(
+                label="Enforce SQL Formatting", default=True
+            )
+        # OPTION FOR PYTHON
+        if refactor_options["programming_language"] == "Python":
+            refactor_options["select_pep_compliance"] = generate_multiselect(
+                label="Select PEP8 Compliance",
+                options=refactor_menu_options["pep_list"],
+            )
+        # OPTION FOR OTHER LANGUAGES
+        if refactor_options["programming_language"] != "SQL":
+            docstring_format = st.empty()
 
-        refactor_options["optimize_for"] = generate_multiselect(
-            label="Optimize for", options=refactor_menu_options["optimize_for"]
-        )
-        refactor_options["select_pep_compliance"] = generate_multiselect(
-            label="Select PEP8 Compliance",
-            options=refactor_menu_options["pep_list"],
-        )
-
-        docstring_format = st.empty()
-
-        refactor_options["autogenerate_docstring"] = generate_toggle(
-            label="Generate docstrings", default=True
-        )
-
-        if refactor_options["autogenerate_docstring"]:
-            docstring_format = docstring_format.selectbox(
-                label="Docstring Format",
-                options=refactor_menu_options["docstring_formats"],
+            refactor_options["autogenerate_docstring"] = generate_toggle(
+                label="Generate docstrings", default=True
             )
 
-        refactor_options["include_type_annotations"] = generate_toggle(
-            label="Generate type annotations", default=True
-        )
+            if refactor_options["autogenerate_docstring"]:
+                docstring_format = docstring_format.selectbox(
+                    label="Docstring Format",
+                    options=refactor_menu_options["docstring_formats"],
+                )
+
+            refactor_options["include_type_annotations"] = generate_toggle(
+                label="Generate type annotations", default=True
+            )
+
+            refactor_options["suggest_code_organization"] = generate_toggle(
+                label="Suggest class and module structure", default=True
+            )
+        # COMMON OPTIONS FOR ALL LANGUAGES
         if refactor:
+            refactor_options["security_check"] = generate_toggle(
+                label="Perform security checks", default=True
+            )
             refactor_options["identify_code_smells"] = generate_toggle(
-                label="Identify code smells", default=True
+                label="Identify code issues", default=True
             )
 
             refactor_options["enable_variable_renaming"] = generate_toggle(
                 label="Optimize variable names", default=True
             )
-
-            refactor_options["remove_unused_imports"] = generate_toggle(
-                label="Remove unused imports", default=True
-            )
-        refactor_options["suggest_code_organization"] = generate_toggle(
-            label="Suggest class and module structure", default=True
-        )
+            if refactor_options["programming_language"] != "SQL":
+                refactor_options["remove_unused_imports"] = generate_toggle(
+                    label="Remove unused imports", default=True
+                )
 
         refactor_options["comment_verbosity"] = generate_dropdown(
             label="Comment Verbosity",

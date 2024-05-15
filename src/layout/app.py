@@ -23,7 +23,7 @@ def run_app():
 def get_page_contents(page, options):
     if page == "Home":
         homepage()
-    elif page == "Code Refactoring":
+    elif page == "CodeLab":
         code_refactoring(options)
-    elif page == "CSV File Data Analysis":
+    elif page == "Analytics Engine":
         data_analysis()
