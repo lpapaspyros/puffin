@@ -6,11 +6,11 @@
 
 # Table of Content
 <!-- vscode-markdown-toc -->
-  1. [Categories and Scoring Guidelines](#CategoriesandScoringGuidelines)
-    1.1. [Applying Scores](#ApplyingScores)
-	1.2. [Example Evaluation](#ExampleEvaluation)
-		 1.2.1. [Initial Code](#InitialCode)
-		 1.2.2. [Refactored Code](#RefactoredCode)
+* 1. [Categories and Scoring Guidelines](#CategoriesandScoringGuidelines)
+	* 1.1. [Applying Scores](#ApplyingScores)
+	* 1.2. [Example Evaluation](#ExampleEvaluation)
+		* 1.2.1. [Initial Code](#InitialCode)
+		* 1.2.2. [Refactored Code](#RefactoredCode)
 
 <!-- vscode-markdown-toc-config
 	numbering=true
