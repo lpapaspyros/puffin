@@ -59,14 +59,8 @@ def get_refactor_options() -> Dict[str, Any]:
     """
     refactor_menu_options = load_refactor_menu_options()
     refactor_options = {}
-    refactor = st.session_state["selected_functionality"] == "Refactor"
-    expander_title = (
-        ":twisted_rightwards_arrows: **Refactor Options**"
-        if refactor
-        else ":twisted_rightwards_arrows: **Code Generation Options**"
-    )
 
-    with st.expander(expander_title, expanded=True):
+    with st.expander(":twisted_rightwards_arrows: **Options**", expanded=True):
         programming_language = generate_dropdown(
             "Programming Language",
             refactor_menu_options["programming_languages"],
@@ -124,24 +118,21 @@ def get_refactor_options() -> Dict[str, Any]:
             )
 
         # Common options regardless of programming language.
-        if refactor:
-            refactor_options.update(
-                {
-                    "security_check": generate_toggle(
-                        "Perform security checks", True
-                    ),
-                    "identify_code_smells": generate_toggle(
-                        "Identify code issues", True
-                    ),
-                    "enable_variable_renaming": generate_toggle(
-                        "Optimize variable names", True
-                    ),
-                }
+        refactor_options.update(
+            {
+                "security_check": generate_toggle("Perform security checks", True),
+                "identify_code_smells": generate_toggle(
+                    "Identify code issues", True
+                ),
+                "enable_variable_renaming": generate_toggle(
+                    "Optimize variable names", True
+                ),
+            }
+        )
+        if programming_language != "SQL":
+            refactor_options["remove_unused_imports"] = generate_toggle(
+                "Remove unused imports", True
             )
-            if programming_language != "SQL":
-                refactor_options["remove_unused_imports"] = generate_toggle(
-                    "Remove unused imports", True
-                )
 
         refactor_options["comment_verbosity"] = generate_dropdown(
             "Comment Verbosity", refactor_menu_options["comment_verbosity"]
