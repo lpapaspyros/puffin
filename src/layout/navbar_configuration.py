@@ -4,7 +4,7 @@ from streamlit_navigation_bar import st_navbar
 def navbar():
     pages = ["CodeLab", "Analytics Engine", "GitLab"]
     urls = {
-        "GitLab": "https://gitlab.com/pngts93/arctic-streamlit-hackathon/-/tree/master?ref_type=heads"
+        "GitLab": "https://gitlab.com/pngts93/arctic-streamlit-hackathon/-/tree/main?ref_type=heads"
     }
 
     logo_path = "./assets/Snowflake_Logomark_blue.svg"
