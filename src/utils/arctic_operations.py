@@ -130,7 +130,10 @@ class ArcticOps:
             key=f"how_to_use_{unique_id}",
             use_container_width=True,
         ):
-            prompt = "Show me step by step and with examples how to use it"
+            prompt = (
+                "Show me step by step and with examples how to use the provided"
+                " code and how to implement it"
+            )
             self.send_prompt(prompt)
 
         prompt = col[3].text_input(

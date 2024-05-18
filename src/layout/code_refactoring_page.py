@@ -25,7 +25,7 @@ def code_refactoring(refactor_options: Dict) -> ArcticOps:
     return
 
 
-# @st.experimental_fragment
+@st.experimental_fragment
 def handle_follow_up_prompt(refactor_options):
     arctic_ops = ArcticOps(
         temperature=refactor_options["model_parameters"]["temperature"],
