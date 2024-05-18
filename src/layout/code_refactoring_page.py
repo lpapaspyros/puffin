@@ -229,7 +229,9 @@ def generate_prompt(user_input: str, refactor_options: Dict) -> str:
             " long-term use. Rate the code in the following categories on a scale"
             " of 1-10: readability, maintainability, performance, and security."
             " Provide a table with the scores and a summary of the review,"
-            " including suggestions for improvement."
+            " including suggestions for improvement.\n In the end of your response"
+            ' provide the final score in this json format format: {"readability":'
+            ' 8, "maintainability": 7, "performance": 6, "security": 9}.\n'
         )
 
     if functionality == "Refactor":
