@@ -13,6 +13,7 @@ def sidebar(page: str) -> Dict[str, Any]:
     Returns:
         A dictionary containing options based on the provided page.
     """
+    side_bar_mods()
     with st.sidebar:
         col1, col2 = st.columns(2)
         col1.image("assets/puffin.png", width=200)
@@ -35,6 +36,29 @@ def sidebar(page: str) -> Dict[str, Any]:
 
         return options
 
+
+def side_bar_mods():
+
+    html_injection = """
+    <style>
+    div[data-testid="stSidebarUserContent"] {
+        padding-top: 0rem;
+    }
+    </style>
+    """
+    st.markdown(html_injection, unsafe_allow_html = True)
+
+    html_injection = """
+    <style>
+    .st-emotion-cache-dvne4q {
+        padding-right: 1rem;
+        padding-bottom: 3rem;
+        padding-left: 1rem;
+    }
+    </style>
+    """
+    st.markdown(html_injection, unsafe_allow_html = True)
+    
 
 def get_code_refactoring_options() -> Dict[str, Any]:
     """Get options for code refactoring.
@@ -94,6 +118,10 @@ def get_refactor_options() -> Dict[str, Any]:
                 "Select PEP8 Compliance", refactor_menu_options["pep_list"]
             )
 
+        refactor_options["comment_verbosity"] = generate_dropdown(
+            "Comment Verbosity", refactor_menu_options["comment_verbosity"]
+        )
+
         # Docstring and type annotation options for non-SQL languages.
         if programming_language != "SQL":
             docstring_format = st.empty()
@@ -134,10 +162,6 @@ def get_refactor_options() -> Dict[str, Any]:
                 "Remove unused imports", True
             )
 
-        refactor_options["comment_verbosity"] = generate_dropdown(
-            "Comment Verbosity", refactor_menu_options["comment_verbosity"]
-        )
-
         return refactor_options
 
 
@@ -151,7 +175,7 @@ def generate_toggle(label: str, default: bool) -> bool:
     Returns:
         The current state of the toggle switch.
     """
-    return st.checkbox(label, default)
+    return st.toggle(label, default)
 
 
 def generate_dropdown(label: str, options: list) -> Any:

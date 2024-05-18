@@ -1,6 +1,9 @@
 import streamlit as st
-from streamlit_ace import st_ace
 from typing import Dict
+from streamlit_ace import st_ace
+import streamlit_antd_components as sac
+
+
 from utils import ArcticOps
 
 
@@ -12,14 +15,8 @@ def code_refactoring(refactor_options: Dict) -> None:
     Args:
         refactor_options (Dict): Options for code refactoring and generation.
     """
-    st.subheader("Select Functionality")
-    selected_functionality = st.radio(
-        "Refactor or Write New Code",
-        ["Refactor", "Write New Code", "Review Code"],
-        horizontal=True,
-        label_visibility="collapsed",
-    )
 
+    selected_functionality = get_functionality()
     update_selected_functionality(selected_functionality)
 
     if selected_functionality in ["Refactor", "Write New Code"]:
@@ -27,6 +24,27 @@ def code_refactoring(refactor_options: Dict) -> None:
     elif selected_functionality == "Review Code":
         st.subheader("Review Code")
         process_review_code_input(refactor_options)
+
+
+def get_functionality():
+
+    options ={
+        "Refactor": "arrow-clockwise", 
+        "Write New Code": "plus-circle",
+        "Review Code": "search"}
+    
+    items = [sac.SegmentedItem(
+        label = label,
+        icon = icon,
+    ) for label, icon in options.items()]
+    
+    selected_functionality = sac.segmented(
+        label = "Select Functionality",
+        items = items,
+        color = "#264C73",
+        use_container_width = True,
+    )
+    return(selected_functionality)
 
 
 def update_selected_functionality(selected_functionality: str) -> None:
@@ -42,7 +60,8 @@ def update_selected_functionality(selected_functionality: str) -> None:
         or st.session_state["selected_functionality"] != selected_functionality
     ):
         st.session_state["selected_functionality"] = selected_functionality
-        st.experimental_rerun()
+        st.session_state["code_refactored"] = False
+        st.rerun()
 
 
 def process_code_input(
@@ -55,27 +74,39 @@ def process_code_input(
         selected_functionality (str): The selected functionality option.
         refactor_options (Dict): Options for code refactoring and generation.
     """
-    st.subheader(
-        "Enter your code here"
-        if selected_functionality == "Refactor"
-        else "Please provide your requirements"
-    )
-    user_input = (
-        get_user_provided_code(
-            refactor_options["refactor_options"]["programming_language"].lower()
-        )
-        if selected_functionality == "Refactor"
-        else st.text_area("Enter your requirements here", height=200)
-    )
-    button_label = (
-        "Refactor Code"
-        if selected_functionality == "Refactor"
-        else "Generate Code"
-    )
+    col1, col2 = st.columns([1, 1 if st.session_state.get("code_refactored", False) else 0.01])
+    with col1:
+        with st.container(border = True):
+            st.subheader(
+                "Enter your code here"
+                if selected_functionality == "Refactor"
+                else "Please provide your requirements"
+            )
+            user_input = (
+                get_user_provided_code(
+                    refactor_options["refactor_options"]["programming_language"].lower()
+                )
+                if selected_functionality == "Refactor"
+                else st.text_area("Enter your requirements here", height=200)
+            )
+            button_label = (
+                "Refactor Code"
+                if selected_functionality == "Refactor"
+                else "Generate Code"
+            )
 
-    if st.button(button_label):
-        refactor_code(user_input, refactor_options)
+            if st.button(button_label):
+                st.session_state["code_refactored"] = True
+                st.rerun()
 
+    if st.session_state.get("code_refactored", False):
+        with col2:
+            with st.container(border = True):
+                with st.chat_message("assistant"):
+                    with st.spinner("Refactoring . . ."):
+                        refactored_code = refactor_code(user_input, refactor_options)
+                    st.write_stream(refactored_code)
+        
 
 def process_review_code_input(refactor_options: Dict) -> None:
     """
@@ -129,7 +160,7 @@ def refactor_code(user_code_input: str, refactor_options: Dict) -> None:
     prompt = generate_prompt(
         user_code_input, refactor_options, functionality="Refactor"
     )
-    st.write_stream(arctic_ops.invoke_snowflake_arctic(prompt))
+    return(arctic_ops.invoke_snowflake_arctic(prompt))
 
 
 def review_code(user_code_input: str, refactor_options: Dict) -> None:
