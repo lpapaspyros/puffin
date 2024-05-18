@@ -1,7 +1,24 @@
 import streamlit as st
 
 
+def set_page_width(width: int):
+    st.markdown(
+        f"""
+        <style>
+        .main .block-container {{
+            max-width: {width}px;
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }}
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
 def homepage():
+    set_page_width(900)
+
     st.markdown(
         """
     # 🐧 Puffin: Your AI Coding Buddy! 🐧
