@@ -112,7 +112,7 @@ class ArcticOps:
                 for message in st.session_state.messages:
                     if message["role"] == "assistant":
                         responce_no += 1
-                        st.write(f"Response {responce_no}:")
+                        st.markdown(f"### **Response {responce_no}:**")
                         st.write(message["content"])
                         st.divider()
 
