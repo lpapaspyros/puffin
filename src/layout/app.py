@@ -1,6 +1,7 @@
 import streamlit as st
 from layout import code_refactoring, data_analysis, homepage, navbar, page_config
 from layout.sidebar import sidebar
+from utils.arctic_operations import ArcticOps
 
 
 def init_session_state():
@@ -18,7 +19,6 @@ def run_app():
     else:
         options = None
     get_page_contents(page, options)
-
 
 def get_page_contents(page, options):
     if page == "Home":

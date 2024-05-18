@@ -5,23 +5,34 @@ from typing import Dict
 from utils import ArcticOps
 
 
-def code_refactoring(refactor_options: Dict) -> None:
+def code_refactoring(refactor_options: Dict) -> ArcticOps:
     """
     Handles code refactoring, writing new code, or reviewing code based on
     selected functionality.
 
     Args:
         refactor_options (Dict): Options for code refactoring and generation.
-    """
 
+    Returns:
+        ArcticOps: The ArcticOps object used for code processing.
+    """
     selected_functionality = get_functionality()
     update_selected_functionality(selected_functionality)
 
-    if selected_functionality in ["Refactor", "Write New Code"]:
-        process_code_input(selected_functionality, refactor_options)
-    elif selected_functionality == "Review Code":
-        st.subheader("Review Code")
-        process_review_code_input(refactor_options)
+    process_code(selected_functionality, refactor_options)
+    if st.session_state.get("code_refactored", False):
+        handle_follow_up_prompt(refactor_options)
+    return
+
+
+# @st.experimental_fragment
+def handle_follow_up_prompt(refactor_options):
+    arctic_ops = ArcticOps(
+        temperature=refactor_options["model_parameters"]["temperature"],
+        top_p=refactor_options["model_parameters"]["top_p"],
+        init_chat_history=False,
+    )
+    arctic_ops.get_and_process_prompt()
 
 
 def get_functionality():
@@ -45,7 +56,6 @@ def get_functionality():
         color="#264C73",
         use_container_width=True,
     )
-    st.write(selected_functionality)
     return selected_functionality
 
 
@@ -66,69 +76,70 @@ def update_selected_functionality(selected_functionality: str) -> None:
         st.rerun()
 
 
-def process_code_input(
-    selected_functionality: str, refactor_options: Dict
-) -> None:
+def process_code(selected_functionality: str, refactor_options: Dict) -> ArcticOps:
     """
     Processes user code input based on the selected functionality.
 
     Args:
         selected_functionality (str): The selected functionality option.
         refactor_options (Dict): Options for code refactoring and generation.
+
+    Returns:
+        ArcticOps: The ArcticOps object used for code processing.
     """
     col1, col2 = st.columns(
         [1, 1 if st.session_state.get("code_refactored", False) else 0.01]
     )
     with col1:
         with st.container(border=True):
-            st.subheader(
-                "Enter your code here"
-                if selected_functionality == "Refactor"
-                else "Please provide your requirements"
-            )
+            if selected_functionality == "Review Code":
+                st.subheader("Review Code")
+            else:
+                st.subheader(
+                    "Enter your code here"
+                    if selected_functionality == "Refactor"
+                    else "Please provide your requirements"
+                )
+
             user_input = (
                 get_user_provided_code(
                     refactor_options["refactor_options"][
                         "programming_language"
                     ].lower()
                 )
-                if selected_functionality == "Refactor"
+                if selected_functionality in ["Refactor", "Review Code"]
                 else st.text_area("Enter your requirements here", height=200)
             )
-            button_label = (
-                "Refactor Code"
-                if selected_functionality == "Refactor"
-                else "Generate Code"
-            )
+
+            button_label = {
+                "Refactor": "Refactor Code",
+                "Write New Code": "Generate Code",
+                "Review Code": "Review Code",
+            }[selected_functionality]
 
             if st.button(button_label):
                 st.session_state["code_refactored"] = True
+                st.session_state["user_input"] = user_input
+                st.session_state["messages"] = []
                 st.rerun()
 
     if st.session_state.get("code_refactored", False):
         with col2:
             with st.container(border=True):
                 with st.chat_message("assistant"):
-                    with st.spinner("Refactoring . . ."):
-                        refactored_code = refactor_code(
-                            user_input, refactor_options
+                    with st.spinner("Processing . . ."):
+                        arctic_ops = ArcticOps(
+                            temperature=refactor_options["model_parameters"][
+                                "temperature"
+                            ],
+                            top_p=refactor_options["model_parameters"]["top_p"],
                         )
-                    st.write_stream(refactored_code)
 
-
-def process_review_code_input(refactor_options: Dict) -> None:
-    """
-    Processes user code input for code review.
-
-    Args:
-        refactor_options (Dict): Options for code refactoring and generation.
-    """
-    user_input = get_user_provided_code(
-        refactor_options["refactor_options"]["programming_language"].lower()
-    )
-
-    if st.button("Review Code"):
-        review_code(user_input, refactor_options)
+                        result = refactor_code(
+                            user_input, arctic_ops, refactor_options
+                        )
+                        st.write_stream(result)
+                        return arctic_ops
 
 
 def get_user_provided_code(language_input: str) -> str:
@@ -152,58 +163,38 @@ def get_user_provided_code(language_input: str) -> str:
     )
 
 
-def refactor_code(user_input: str, refactor_options: Dict) -> None:
-    """
-    Refactors the user-provided code using ArcticOps.
-
-    Args:
-        user_input (str): The user-provided code.
-        refactor_options (Dict): Options for code refactoring and generation.
-    """
-    st.session_state["user_input"] = user_input
-    arctic_ops = ArcticOps(
-        temperature=refactor_options["model_parameters"]["temperature"],
-        top_p=refactor_options["model_parameters"]["top_p"],
-    )
-    prompt = generate_prompt(user_input, refactor_options)
-    return arctic_ops.invoke_snowflake_arctic(prompt)
-
-
-def review_code(user_input: str, refactor_options: Dict) -> None:
-    """
-    Reviews the user-provided code using ArcticOps.
-
-    Args:
-        user_input (str): The user-provided code.
-        refactor_options (Dict): Options for code refactoring and generation.
-    """
-    st.session_state["user_input"] = user_input
-    arctic_ops = ArcticOps(
-        temperature=refactor_options["model_parameters"]["temperature"],
-        top_p=refactor_options["model_parameters"]["top_p"],
-    )
-    prompt = generate_prompt(user_input, refactor_options)
-    st.write_stream(arctic_ops.invoke_snowflake_arctic(prompt))
-
-
-def generate_prompt(
-    user_input: str,
-    refactor_options: Dict,
+def refactor_code(
+    user_input: str, arctic_ops: ArcticOps, refactor_options: Dict
 ) -> str:
+    """
+    Refactors or Review the user-provided code using ArcticOps.
+
+    Args:
+        user_input (str): The user-provided code.
+        arctic_ops (ArcticOps): The ArcticOps object.
+        refactor_options (Dict): Options for code refactoring and generation.
+
+    Returns:
+        str: The refactored code.
+    """
+    generate_prompt(user_input, refactor_options)
+    return arctic_ops.invoke_snowflake_arctic()
+
+
+def generate_prompt(user_input: str, refactor_options: Dict) -> str:
     """
     Generates a prompt for code refactoring, generation, or review.
 
     Args:
         user_input (str): The user-provided code.
         refactor_options (Dict): Options for code refactoring and generation.
-        functionality (str): The selected functionality ("Refactor", "Write New Code", "Review").
 
     Returns:
         str: The generated prompt.
     """
     refactor_opts = refactor_options["refactor_options"]
     functionality = st.session_state["selected_functionality"]
-    if functionality == "Review" or functionality == "Refactor":
+    if functionality in ["Review Code", "Refactor"]:
         prompt = (
             f"The following {refactor_opts['programming_language']} code is"
             f" provided:\n```\n{user_input}\n```\n"
@@ -218,7 +209,7 @@ def generate_prompt(
             "Based on the requirements, the code should be generated and optimized"
             " based on the following criteria:\n"
         )
-    elif functionality == "Review":
+    if functionality == "Review Code":
         prompt += (
             "Please review the following code with attention to functionality,"
             " readability, efficiency, error handling, security, testing,"
@@ -245,7 +236,8 @@ def generate_prompt(
             "The code should be refactored and optimized based on the following"
             " criteria:\n"
         )
-    if functionality != "Review":
+
+    if functionality != "Review Code":
         criteria = []
 
         if refactor_opts.get("optimize_for"):
@@ -284,7 +276,7 @@ def generate_prompt(
                 criteria.append("- Remove unused imports")
             if refactor_opts.get("security_check"):
                 criteria.append("- Perform security checks")
-        if functionality == "Review":
+        if functionality == "Review Code":
             criteria.append(
                 "- Provide code metrics (e.g., complexity, readability)"
             )
@@ -306,4 +298,10 @@ def generate_prompt(
                 "\nProvide the new refactored code and a step-by-step guide on the"
                 " changes made."
             )
+    # add prompt to session stat
+    st.session_state.messages.append({"role": "user", "content": prompt})
     return prompt
+
+
+if __name__ == "__main__":
+    pass
