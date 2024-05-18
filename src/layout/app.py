@@ -1,13 +1,18 @@
-import streamlit as st 
-
+import streamlit as st
+from layout import code_refactoring, data_analysis, homepage, navbar, page_config
 from layout.sidebar import sidebar
-from layout import homepage, data_analysis, code_refactoring, page_config, navbar
+
+
+def init_session_state():
+    if "selected_functionality" not in st.session_state:
+        st.session_state["selected_functionality"] = None
 
 
 def run_app():
-
     page_config()
     page = navbar()
+    init_session_state()
+
     if page != "Home":
         options = sidebar(page)
     else:
@@ -16,10 +21,9 @@ def run_app():
 
 
 def get_page_contents(page, options):
-
     if page == "Home":
         homepage()
-    elif page == "Code Refactoring":
+    elif page == "CodeLab":
         code_refactoring(options)
-    elif page == "CSV File Data Analysis":
+    elif page == "Analytics Engine":
         data_analysis()
