@@ -65,20 +65,22 @@ class ArcticOps:
             st.stop()
 
     def invoke_snowflake_arctic(self):
-        prompt_list = []
+        prompt = []
         for dict_message in st.session_state.messages:
             if dict_message["role"] == "user":
-                prompt_list.append(
-                    {"role": "user", "content": dict_message["content"]}
+                prompt.append(
+                    "<|im_start|>user\n" + dict_message["content"] + "<|im_end|>"
                 )
             else:
-                prompt_list.append(
-                    {"role": "assistant", "content": dict_message["content"]}
+                prompt.append(
+                    "<|im_start|>assistant\n"
+                    + dict_message["content"]
+                    + "<|im_end|>"
                 )
 
-        prompt_str = ""
-        for message in prompt_list:
-            prompt_str += f"{message['role']}\n{message['content']}\n"
+        prompt.append("<|im_start|>assistant")
+        prompt.append("")
+        prompt_str = "\n".join(prompt)
 
         num_tokens = self.get_num_tokens(prompt_str)
         max_tokens = 1500
@@ -89,19 +91,31 @@ class ArcticOps:
                 f" {max_tokens} tokens."
             )
 
+        st.session_state.messages.append({"role": "assistant", "content": ""})
         for event in replicate.stream(
             "snowflake/snowflake-arctic-instruct",
             input={
                 "prompt": prompt_str,
                 "temperature": self.temperature,
+                "prompt_template": r"{prompt}",
                 "top_p": self.top_p,
             },
         ):
+            st.session_state.messages[-1]["content"] += str(event)
             yield str(event)
 
     def send_prompt(self, prompt):
         st.session_state.messages.append({"role": "user", "content": prompt})
         with st.chat_message("assistant"):
+            with st.expander("View Previous Responses", expanded=False):
+                responce_no = 0
+                for message in st.session_state.messages:
+                    if message["role"] == "assistant":
+                        responce_no += 1
+                        st.write(f"Response {responce_no}:")
+                        st.write(message["content"])
+                        st.divider()
+
             response = self.invoke_snowflake_arctic()
             with st.container(border=True):
                 st.write_stream(response)
@@ -121,7 +135,7 @@ class ArcticOps:
             key=f"create_unit_test_{unique_id}",
             use_container_width=True,
         ):
-            prompt = "Create Unit Test"
+            prompt = "\n - Create Unit Test"
             self.send_prompt(prompt)
 
         col[2].markdown(create_space_markdown, unsafe_allow_html=True)
@@ -131,8 +145,8 @@ class ArcticOps:
             use_container_width=True,
         ):
             prompt = (
-                "Show me step by step and with examples how to use the provided"
-                " code and how to implement it"
+                "\n - Show me step by step and with examples how to use the"
+                " provided code and how to implement it"
             )
             self.send_prompt(prompt)
 
@@ -143,4 +157,4 @@ class ArcticOps:
 
         col[4].markdown(create_space_markdown, unsafe_allow_html=True)
         if col[4].button("Send", key=f"send_message_{unique_id}"):
-            self.send_prompt(prompt)
+            self.send_prompt(f"\n - {prompt}")

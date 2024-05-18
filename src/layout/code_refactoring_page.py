@@ -33,6 +33,7 @@ def handle_follow_up_prompt(refactor_options):
         init_chat_history=False,
     )
     arctic_ops.get_and_process_prompt()
+    # st.json(st.session_state.messages) # Uncomment to see the messages in JSON format
 
 
 def get_functionality():
