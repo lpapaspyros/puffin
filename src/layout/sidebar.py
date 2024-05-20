@@ -16,14 +16,14 @@ def sidebar(page: str) -> Dict[str, Any]:
     side_bar_mods()
     with st.sidebar:
         col1, col2 = st.columns(2)
-        col1.image("assets/puffin.png", width=200)
+        col1.image("assets/puffin_logo.png", width=200)
         col2.markdown("# ")
         col2.markdown("# ")
         col2.title("Puffin")
 
         st.markdown(
-            "<h3 style='text-align: center; color: grey;'>AI-Powered Code"
-            " Refactoring & Data Insights</h3>",
+            "<h3 style='text-align: center; color: grey;'>Smarter Coding Made"
+            " Easy</h3>",
             unsafe_allow_html=True,
         )
         sac.divider(color="black", key="title")
@@ -38,15 +38,14 @@ def sidebar(page: str) -> Dict[str, Any]:
 
 
 def side_bar_mods():
-
     html_injection = """
     <style>
     div[data-testid="stSidebarUserContent"] {
-        padding-top: 0rem;
+        padding-top: 3rem;
     }
     </style>
     """
-    st.markdown(html_injection, unsafe_allow_html = True)
+    st.markdown(html_injection, unsafe_allow_html=True)
 
     html_injection = """
     <style>
@@ -57,8 +56,8 @@ def side_bar_mods():
     }
     </style>
     """
-    st.markdown(html_injection, unsafe_allow_html = True)
-    
+    st.markdown(html_injection, unsafe_allow_html=True)
+
 
 def get_code_refactoring_options() -> Dict[str, Any]:
     """Get options for code refactoring.
