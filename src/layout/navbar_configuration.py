@@ -2,7 +2,7 @@ from streamlit_navigation_bar import st_navbar
 
 
 def navbar():
-    pages = ["Home", "CodeLab", "Code Duel", "Data Insights", "GitHub"]
+    pages = ["Home", "CodeLab", "Data Insights", "GitHub"]
     urls = {
         "GitHub": "https://github.com/lpapaspyros/puffin"
     }
