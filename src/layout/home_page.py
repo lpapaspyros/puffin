@@ -4,7 +4,11 @@ import streamlit as st
 from utils.uitls import display_gif, set_page_width
 
 sys = platform.system()
-work_dir = os.path.dirname(os.path.abspath(__file__)).replace("src\\layout", "")
+work_dir = (
+    os.path.dirname(os.path.abspath(__file__))
+    .replace("src\\layout", "")
+    .replace("src/layout", "")
+)
 
 
 def homepage():
