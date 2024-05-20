@@ -114,7 +114,7 @@ def get_refactor_options() -> Dict[str, Any]:
             )
         elif programming_language == "Python":
             refactor_options["select_pep_compliance"] = generate_multiselect(
-                "Select PEP8 Compliance", refactor_menu_options["pep_list"]
+                "Select PEP Compliance", refactor_menu_options["pep_list"]
             )
 
         refactor_options["comment_verbosity"] = generate_dropdown(
