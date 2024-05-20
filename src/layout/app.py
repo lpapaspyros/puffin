@@ -25,5 +25,5 @@ def get_page_contents(page, options):
         homepage()
     elif page == "CodeLab":
         code_refactoring(options)
-    elif page == "Analytics Engine":
-        data_analysis()
+    elif page == "Data Insights":
+        data_analysis(options)

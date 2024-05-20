@@ -31,7 +31,7 @@ def sidebar(page: str) -> Dict[str, Any]:
         options = {}
         if page == "CodeLab":
             options = get_code_refactoring_options()
-        elif page == "Analytics Engine":
+        elif page == "Data Insights":
             options = get_csv_data_analysis_options()
 
         return options
@@ -223,7 +223,50 @@ def get_model_parameters() -> Tuple[float, float]:
 
 def get_csv_data_analysis_options() -> None:
     """Placeholder function for CSV data analysis options."""
-    pass
+    menu_selection = get_menu_selection()
+    temperature, top_p = get_model_parameters()
+    if menu_selection == "Data Analysis":
+        analysis_options = get_analysis_options()
+        sidebar_options = {
+            "menu_selection": "Data Analysis",
+            "model_parameters": {"temperature": temperature, "top_p": top_p},
+            "analysis_options": analysis_options,
+        }
+    elif menu_selection == "Data Visualizations":
+        sidebar_options = {
+            "menu_selection": "Data Visualizations",
+            "model_parameters": {"temperature": temperature, "top_p": top_p},
+            }
+
+    return sidebar_options
+
+
+def get_menu_selection():
+
+    menu_options = {
+        "Data Analysis": "clipboard-data",
+        "Data Visualizations": "graph-up"
+    }
+    menu_items = [sac.MenuItem(label, icon) for label, icon in menu_options.items()]
+    with st.expander("Menu", expanded = True):
+        menu_selection = sac.menu(
+            items = menu_items,
+            index = 0,
+            variant = "right-bar",
+            color = "#264C73"
+        )
+    return(menu_selection)
+
+
+def get_analysis_options():
+
+    with st.expander(":mag_right: Options", expanded = True):    
+        analysis_options = {}
+        analysis_options["data_sample"] = generate_toggle("Display data sample", True)
+        analysis_options["descriptive_statistics"] = generate_toggle("Generate descriptive statistics", True)
+        analysis_options["data_insights"] = generate_toggle("Generate data insights", True)
+
+    return(analysis_options)
 
 
 def load_refactor_menu_options() -> Dict[str, Any]:

@@ -158,3 +158,14 @@ class ArcticOps:
         col[4].markdown(create_space_markdown, unsafe_allow_html=True)
         if col[4].button("Send", key=f"send_message_{unique_id}"):
             self.send_prompt(f"\n - {prompt}")
+
+    def invoke_snowflake_arctic_simple(self, prompt):
+        for event in replicate.stream(
+            "snowflake/snowflake-arctic-instruct",
+            input={
+                "prompt": prompt,
+                "temperature": self.temperature,
+                "top_p": self.top_p,
+            },
+        ):
+            yield str(event)

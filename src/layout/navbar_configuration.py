@@ -2,12 +2,10 @@ from streamlit_navigation_bar import st_navbar
 
 
 def navbar():
-    pages = ["Home", "CodeLab", "Code Duel", "GitLab"]
+    pages = ["Home", "CodeLab", "Code Duel", "Data Insights", "GitHub"]
     urls = {
-        "GitLab": "https://gitlab.com/pngts93/arctic-streamlit-hackathon/-/tree/main?ref_type=heads"
+        "GitHub": "https://github.com/lpapaspyros/puffin"
     }
-
-    # logo_path = "./assets/puffin_logo.svg"
 
     styles = {
         "nav": {
@@ -35,7 +33,6 @@ def navbar():
 
     page = st_navbar(
         pages,
-        # logo_path=logo_path,
         urls=urls,
         styles=styles,
         options=options,

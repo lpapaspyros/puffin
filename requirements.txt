@@ -4,5 +4,6 @@ transformers
 streamlit-antd-components
 pandas
 streamlit-navigation-bar
-streamlit-ace 
+streamlit-ace
+pygwalker
 
