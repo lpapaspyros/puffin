@@ -7,34 +7,26 @@
 [![Python Version](https://img.shields.io/badge/python-3.10-blue)](https://www.python.org/downloads/release/python-3916/)
 
 # Table of Content
-<!-- vscode-markdown-toc -->
-* 1. [✨ Key Features](#KeyFeatures)
-* 2. [Options and Functionalities](#OptionsandFunctionalities)
-	* 2.1. [Code Refactoring, Writing, and Reviewing](#CodeRefactoringWritingandReviewing)
-* 3. [🎉 Let's Get Started!](#LetsGetStarted)
-	* 3.1. [:film_projector: Tutorials:](#film_projector:Tutorials:)
-	* 3.2. [🎨 Step 1: Choose Your Task](#Step1:ChooseYourTask)
-		* 3.2.1. [Demo - Choosing Your Task:](#Demo-ChoosingYourTask:)
-	* 3.3. [📝 Step 2: Input Your Code or Requirements](#Step2:InputYourCodeorRequirements)
-		* 3.3.1. [Demo: Inputting Code/Requirements](#Demo:InputtingCodeRequirements)
-	* 3.4. [⚙️ Step 3: Configure Options](#Step3:ConfigureOptions)
-	* 3.5. [🚀 Step 4: Process Your Code](#Step4:ProcessYourCode)
-		* 3.5.1. [Demo: Configuring Options and Generate/Refactor/Review Code](#Demo:ConfiguringOptionsandGenerateRefactorReviewCode)
-	* 3.6. [📊 Step 5: View the Results](#Step5:ViewtheResults)
-	* 3.7. [🔄 Step 6: Follow-Up Prompts](#Step6:Follow-UpPrompts)
-		* 3.7.1. [Demo: Follow-Up Prompts](#Demo:Follow-UpPrompts)
-* 4. [Examples of Puffin's Features](#ExamplesofPuffinsFeatures)
-	* 4.1. [Refactor Code](#RefactorCode)
-	* 4.2. [Write New Code](#WriteNewCode)
-	* 4.3. [Review Code](#ReviewCode)
-		* 4.3.1. [Demo: Reviewing Code](#Demo:ReviewingCode)
-
-<!-- vscode-markdown-toc-config
-	numbering=true
-	autoSave=true
-	/vscode-markdown-toc-config -->
-<!-- /vscode-markdown-toc -->
-
+* 1. [✨ Key Features](#-key-features)
+* 2. [Options and Functionalities](#options-and-functionalities)
+    * 2.1. [Code Refactoring, Writing, and Reviewing](#code-refactoring-writing-and-reviewing)
+* 3. [🎉 Let's Get Started!](#-lets-get-started)
+    * 3.1. [:film_projector: Tutorials:](#film_projector-tutorials)
+    * 3.2. [🎨 Step 1: Choose Your Task](#-step-1-choose-your-task)
+        * 3.2.1. [Demo - Choosing Your Task:](#demo---choosing-your-task)
+    * 3.3. [📝 Step 2: Input Your Code or Requirements](#-step-2-input-your-code-or-requirements)
+        * 3.3.1. [Demo: Inputting Code/Requirements](#demo-inputting-coderequirements)
+    * 3.4. [⚙️ Step 3: Configure Options](#-step-3-configure-options)
+    * 3.5. [🚀 Step 4: Process Your Code](#-step-4-process-your-code)
+        * 3.5.1. [Demo: Configuring Options and Generate/Refactor/Review Code](#demo-configuring-options-and-generaterefactorreview-code)
+    * 3.6. [📊 Step 5: View the Results](#-step-5-view-the-results)
+    * 3.7. [🔄 Step 6: Follow-Up Prompts](#-step-6-follow-up-prompts)
+        * 3.7.1. [Demo: Follow-Up Prompts](#demo-follow-up-prompts)
+* 4. [Examples of Puffin's Features](#examples-of-puffins-features)
+    * 4.1. [Refactor Code](#refactor-code)
+    * 4.2. [Write New Code](#write-new-code)
+    * 4.3. [Review Code](#review-code)
+        * 4.3.1. [Demo: Reviewing Code](#demo-reviewing-code)
 
 # 🐧 Puffin: Your AI Coding Assistant! 🐧
 
