@@ -18,15 +18,24 @@ def data_analysis(analysis_options):
 
     with st.container(border = True):
         uploaded_file = get_uploaded_file()
+        col1, col2, col3 = st.columns([1, 1, 3])
         if uploaded_file:
-            load_dataset_button = st.button("Load Dataset")
-            if load_dataset_button:
-                to_pop = ["data_insights_output", "visualization_insights", "visualization_markdown", "viz_insights_first"]
-                for key_to_pop in to_pop:
-                    if st.session_state.get(key_to_pop):
-                        st.session_state.pop(key_to_pop)
-                df = load_data_to_dataframe(uploaded_file)
-                st.session_state["dataframe"] = df
+            with col1:
+                load_dataset_button = st.button(":arrow_up: Load Dataset", use_container_width = True)
+                if load_dataset_button:
+                    to_pop = ["data_insights_output", "visualization_insights", "visualization_markdown", "viz_insights_first"]
+                    for key_to_pop in to_pop:
+                        if st.session_state.get(key_to_pop):
+                            st.session_state.pop(key_to_pop)
+                    df = load_data_to_dataframe(uploaded_file)
+                    st.session_state["dataframe"] = df
+        else:
+            with col1:
+                if st.session_state.get("dataframe", None) is not None:
+                    clear_data_button = st.button(":wastebasket: Clear Data", use_container_width = True)
+                    if clear_data_button:
+                        st.session_state.pop("dataframe")
+                        st.rerun()
 
     if st.session_state.get("dataframe", None) is not None:
         df = st.session_state["dataframe"]
