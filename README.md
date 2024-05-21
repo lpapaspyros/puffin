@@ -1,7 +1,7 @@
 
 
-[![Release Badge](https://gitlab.com/pngts93/arctic-streamlit-hackathon/-/badges/release.svg?order_by=release_at)](https://gitlab.com/pngts93/arctic-streamlit-hackathon/-/releases)
-[![pipeline status](https://gitlab.com/pngts93/arctic-streamlit-hackathon/badges/main/pipeline.svg)](https://gitlab.com/pngts93/arctic-streamlit-hackathon/-/commits/main)
+[![Release Badge](https://img.shields.io/github/v/release/lpapaspyros/puffin)](https://github.com/lpapaspyros/puffin/releases)
+[![Build Status](https://img.shields.io/github/workflow/status/lpapaspyros/puffin/main)](https://github.com/lpapaspyros/puffin/actions)
 [![Python Version](https://img.shields.io/badge/python-3.10-blue)](https://www.python.org/downloads/release/python-3916/)
 
 # Table of Content
