@@ -1,7 +1,9 @@
 
 
 [![Release Badge](https://img.shields.io/github/v/release/lpapaspyros/puffin)](https://github.com/lpapaspyros/puffin/releases)
-[![Build Status](https://img.shields.io/github/workflow/status/lpapaspyros/puffin/main)](https://github.com/lpapaspyros/puffin/actions)
+[![Contributors](https://img.shields.io/github/contributors/lpapaspyros/puffin)](https://github.com/lpapaspyros/puffin/graphs/contributors)
+[![License](https://img.shields.io/github/license/lpapaspyros/puffin)](https://github.com/lpapaspyros/puffin/blob/main/LICENSE)
+[![Last Commit](https://img.shields.io/github/last-commit/lpapaspyros/puffin)](https://github.com/lpapaspyros/puffin/commits/main)
 [![Python Version](https://img.shields.io/badge/python-3.10-blue)](https://www.python.org/downloads/release/python-3916/)
 
 # Table of Content
