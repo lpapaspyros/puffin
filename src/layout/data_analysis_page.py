@@ -21,6 +21,10 @@ def data_analysis(analysis_options):
         if uploaded_file:
             load_dataset_button = st.button("Load Dataset")
             if load_dataset_button:
+                to_pop = ["data_insights_output", "visualization_insights", "visualization_markdown", "viz_insights_first"]
+                for key_to_pop in to_pop:
+                    if st.session_state.get(key_to_pop):
+                        st.session_state.pop(key_to_pop)
                 df = load_data_to_dataframe(uploaded_file)
                 st.session_state["dataframe"] = df
 
@@ -65,12 +69,16 @@ def display_data_viz_insights(df, arctic_ops: ArcticOps):
                     response_markdown += item
                 st.session_state["visualization_insights"] = response
                 st.session_state["visualization_markdown"] = response_markdown
+                st.session_state["viz_insights_first"] = True
     
     if st.session_state.get("visualization_insights"):
         with st.container(border = True):
             st.subheader("Visualization Insights")
-            st.write_stream(st.session_state["visualization_insights"])
-            st.markdown(st.session_state["visualization_markdown"])
+            if st.session_state.get("viz_insights_first", False): 
+                st.write(st.session_state["visualization_markdown"])
+                st.session_state["viz_insights_first"] = False
+            else:
+                st.markdown(st.session_state["visualization_markdown"])
 
 
 def generate_viz_insights_prompt(df: pd.DataFrame) -> str:
@@ -101,23 +109,30 @@ def generate_viz_insights_prompt(df: pd.DataFrame) -> str:
 def generate_data_insights_prompt(df: pd.DataFrame) -> str:
 
     prompt = f"""   
-    You are an expert in data and statistical analysis and finding meaningfull insights from data. You have been 
-    provided with a data set in the form of a dataframe. You will be given the column names of the dataframe, the 
-    dtypes of the dataframe, a random sample of the dataframe, and the descriptive statistics of a dataframe. 
-    With these information try to identify and isolate key characteristics of the data set and provide useful
-    insights and propose more ways to further analyze the data.
+    You are an expert in data and statistical analysis with a focus on extracting meaningful insights from datasets. 
+    You will be provided with the following details of a dataframe:
+    - Column names and data types.
+    - A random sample of the dataframe.
+    - Descriptive statistics of the dataframe.
+    - The correlation matrix of the dataframe.
 
-    -Dataframe Columns:
-    {df.columns} 
+    Your task is to:
+        1. Identify and isolate key characteristics of the dataset.
+        2. Provide useful insights based on the data.
+        3. Propose further analyses that could deepen the understanding of the data.
+        4. Interpret the statistical and other data provided to derive meaningful conclusions.
 
-    -Dataframe Columns Dtypes:
-    {df.dtypes}
-
-    -Dataframe Data Sample:
+    Data Sample:
     {get_random_sample(df)}
 
-    -Dataframe Descriptive Statistics:
+    Dataframe Information:
+    {get_dataframe_info_as_dataframe(df)}
+
+    Descriptive Statistics:
     {df.describe()}
+
+    Correlation Matrix:
+    {generate_correlation_matrix(df)}
     """
 
     return(prompt)
@@ -133,9 +148,19 @@ def display_data_analysis(analysis_options, arctic_ops):
             with st.expander("**Data Sample**", expanded = True):
                 st.write(get_random_sample(df))
     with col2:
+        if analysis_options["data_summary"]:
+            with st.expander("**Data Summary**", expanded = True):
+                st.write(get_dataframe_info_as_dataframe(df))
+
+    with col1:
         if analysis_options["descriptive_statistics"]:
             with st.expander("**Descriptive Statistics**", expanded = True):
                 st.write(generate_descriptive_statistics(df))
+    with col2:
+        if analysis_options["correlation"]:
+            with st.expander("**Pairwise correlation of columns**", expanded = True):
+                st.write(generate_correlation_matrix(df))
+            
     if analysis_options["data_insights"]:
         with st.expander("**Data Insights**", expanded = True):
             generate_data_insights(df, arctic_ops)
@@ -168,8 +193,78 @@ def generate_descriptive_statistics(df: pd.DataFrame) -> pd.DataFrame:
     return df.describe()
 
 
+def get_dataframe_info_as_dataframe(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Returns the information summary of a pandas DataFrame as a new DataFrame.
+
+    Args:
+        df (pd.DataFrame): The DataFrame for which to get the info summary.
+
+    Returns:
+        pd.DataFrame: A DataFrame containing the information summary.
+    """
+    buffer = StringIO()
+    df.info(buf=buffer)
+    info_str = buffer.getvalue()
+    
+    # Parse the info string
+    lines = info_str.split('\n')
+    parsed_lines = [line.strip() for line in lines if line.strip()]
+    
+    # Extract relevant parts
+    entries = []
+    for line in parsed_lines[5:-2]:  # Skip the non-relevant lines
+        parts = line.split()
+        col_name = parts[1]
+        non_null_count = parts[2]
+        dtype = parts[-1]
+        entries.append([col_name, non_null_count, dtype])
+    
+    # Create DataFrame
+    info_df = pd.DataFrame(entries, columns=['Column', 'Non-Null Count', 'Dtype'])
+    
+    return info_df
+
+
+def count_duplicates(df: pd.DataFrame) -> int:
+    """
+    Returns the number of duplicate rows in a pandas DataFrame.
+
+    Args:
+        df (pd.DataFrame): The DataFrame to check for duplicates.
+
+    Returns:
+        int: The number of duplicate rows in the DataFrame.
+    """
+    return df.duplicated().sum()
+
+
+def generate_correlation_matrix(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Generates a correlation matrix from the numeric columns of a pandas DataFrame.
+
+    Args:
+        df (pd.DataFrame): The DataFrame for which to generate the correlation matrix.
+
+    Returns:
+        pd.DataFrame: A DataFrame representing the correlation matrix of numeric columns.
+    """
+    # Select only the numeric columns
+    numeric_df = df.select_dtypes(include=['number'])
+    return numeric_df.corr()
+
+
 def generate_data_insights(df: pd.DataFrame, arctic_ops: ArcticOps):
 
-    prompt = generate_data_insights_prompt(df)
-    response = arctic_ops.invoke_snowflake_arctic_simple(prompt)
-    st.write_stream(response)
+    with st.spinner("Generating data insights ..."):
+        if not st.session_state.get("data_insights_output", False):
+            prompt = generate_data_insights_prompt(df)
+            response = arctic_ops.invoke_snowflake_arctic_simple(prompt)
+            response_markdown = ""
+            for item in response:
+                response_markdown += item
+            st.write(response_markdown)
+            st.session_state["data_insights_output"] = response_markdown
+        else:
+            st.markdown(st.session_state["data_insights_output"])
+    

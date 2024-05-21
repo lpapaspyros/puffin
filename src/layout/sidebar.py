@@ -263,7 +263,9 @@ def get_analysis_options():
     with st.expander(":mag_right: Options", expanded = True):    
         analysis_options = {}
         analysis_options["data_sample"] = generate_toggle("Display data sample", True)
+        analysis_options["data_summary"] = generate_toggle("Display data set summary", True)
         analysis_options["descriptive_statistics"] = generate_toggle("Generate descriptive statistics", True)
+        analysis_options["correlation"] = generate_toggle("Compute pairwise correlation", True)
         analysis_options["data_insights"] = generate_toggle("Generate data insights", True)
 
     return(analysis_options)
