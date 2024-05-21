@@ -123,7 +123,7 @@ class ArcticOps:
 
     def get_and_process_prompt(self):
         """Get the user prompt and process it"""
-        col = st.columns([2, 2, 1.8, 10, 1, 2], gap="small")
+        col = st.columns([1, 3, 3, 10, 2, 1], gap="small")
         create_space_markdown = "<p style='font-size:9px;'> .</p>"
 
         st.session_state.unique_id_counter += 1
